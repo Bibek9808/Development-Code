@@ -1,0 +1,279 @@
+{% load static tailwind_tags %}
+{% load user_group %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %}{%endblock title%}</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    {% tailwind_css %}
+    <style>
+        /* Custom color theme */
+        .bg-primary {
+            background-color: #6D28D9; /* Purple */
+        }
+
+        .text-primary {
+            color: #6D28D9; /* Purple */
+        }
+
+        .bg-secondary {
+            background-color: #F87171; /* Red */
+        }
+
+        .text-secondary {
+            color: #F87171; /* Red */
+        }
+
+        .bg-gray {
+            background-color: #E5E7EB; /* Gray */
+        }
+
+        .text-gray {
+            color: #4B5563; /* Gray */
+        }
+
+        .hover\:bg-secondary:hover {
+            background-color: #EF4444; /* Dark Red */
+        }
+
+        .active {
+            background-color: #6B7280; /* Gray */
+        }
+    </style>
+</head>
+<body class="font-poppins min-h-screen bg-gray-100">
+    <div class="flex flex-row">
+        <div class="flex w-1/5 bg-primary h-screen text-white">
+            <div class="w-full relative">
+                <div class="flex justify-center pb-8">
+                    <a href="{% url 'home' %}" class="py-8">
+                        <span class="text-4xl text-center font-semibold">VRMS</span>
+                    </a>
+                </div>
+                {% if user.is_superuser %}
+                <div class="text-xl">
+                    {% with request.resolver_match.url_name as url_name %}
+                    <ul class="px-4">
+                        <a href="{% url 'admin_dashboard' %}" class="nav-bar-items {% if url_name == 'admin_dashboard' %}active{% endif %}">
+                            <img src="{% static 'images/dashboard.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Dashboard
+                            </li>
+                        </a>
+                    
+                        <a href="{% url 'end_users_admin' %}" class="nav-bar-items {% if url_name == 'end_users_admin' %}active{% endif %}">
+                            <img src="{% static 'images/end-users.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                End Users
+                            </li>
+                        </a>                        
+
+                        <a href="{% url 'hosts_admin' %}" class="nav-bar-items {% if url_name == 'hosts_admin' %}active{% endif %}">
+                            <img src="{% static 'images/hosts.svg' %}"  alt=""> 
+                            <li class="nav-bar-li">
+                                Hosts
+                            </li>
+                        </a>
+
+                        <a href="{% url 'verify_user' %}" class="nav-bar-items {% if url_name == 'verify_user' %}active{% endif %}">
+                            <img src="{% static 'images/user.svg' %}"  alt="">
+                            <li class="nav-bar-li">
+                                Verify Users
+                            </li>
+                        </a>
+
+                        <a href="{% url 'hosting_request' %}" class="nav-bar-items {% if url_name == 'hosting_request' %}active{% endif %}">
+                            <img src="{% static 'images/Vehicle.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Hosting Request
+                            </li>
+                        </a>
+
+                        <a href="{% url 'verify_travelogue' %}" class="nav-bar-items {% if url_name == 'verify_travelogue' %}active{% endif %}">
+                            <img src="{% static 'images/blog.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Travelogues
+                            </li>
+                        </a>
+
+                        <a href="{% url 'view_reports' %}" class="nav-bar-items {% if url_name == 'view_reports' %}active{% endif %}">
+                            <img src="{% static 'images/request.svg' %}" alt="">
+                            <li class="nav-bar-li">
+                                Reports
+                            </li>
+                        </a>
+
+                        <a href="{% url 'view_transactions' %}" class="nav-bar-items {% if url_name == 'view_transactions' %}active{% endif %}">
+                            <img src="{% static 'images/transaction.svg' %}" alt="">
+                            <li class="nav-bar-li">
+                                Transactions
+                            </li>
+                        </a>
+                        <a href="{% url 'view_policies' %}" class="nav-bar-items {% if url_name == 'view_policies' or url_name == 'terms_and_conditions' or url_name == 'privacy_policy' or url_name == 'faqs' %}active{% endif %}">
+                            <img src="{% static 'images/blog.svg' %}" alt="">
+                            <li class="nav-bar-li">
+                                Policies
+                            </li>
+                        </a>
+                    </ul>
+                    {% endwith %}
+                </div>
+                
+                <div class="flex flex-row absolute bottom-0 justify-evenly p-4 w-full">
+                    <a href="" class=" ">
+                        <img src="{% static 'images/default_profile.jpg' %}" style="object-fit: contain" alt="" class="w-20 h-20 object-cover rounded-full ">
+                    </a>
+    
+                    <div class="flex flex-col px-8 justify-evenly">
+                        <p class="text-primary px-4 mt-2 ">Admin</p>
+                        <p class="text-gray px-4 rounded-xl bg-gray text-black py-0.75 ">Admin</p>
+                    </div>
+    
+                    <div class="ml-auto my-auto flex-end p-1.5 bg-gray rounded-full">
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'images/logout.svg' %}" alt="" class="h-8">
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if user|has_group:'enduser' %}
+                <div class="text-xl">
+                    {% with request.resolver_match.url_name as url_name %}
+                    <ul class="px-4">
+                        <a href="{% url 'enduser_profile' %}" class="nav-bar-items {% if url_name == 'enduser_profile' or url_name == 'enduser_update_profile' or url_name == 'enduser_upload_documents' %}active{% endif %}">
+                            <img src="{% static 'images/user.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Profile
+                            </li>
+                       
+                        </a>
+
+                        <a href="{% url 'renting_history' %}" class="nav-bar-items {% if url_name == 'renting_history' %}active{% endif %}">
+                            <img src="{% static 'images/Vehicle.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Renting History
+                            </li>
+                        </a>
+
+                        <a href="{% url 'travelogues_uploaded' %}" class="nav-bar-items {% if url_name == 'travelogues_uploaded' %}active{% endif %}">
+                            <img src="{% static 'images/blog.svg' %}" alt=""> 
+                            <li class="nav-bar-li ">
+                                Travelogues Uploaded
+                            </li>
+                        </a>
+                    </ul>
+                    {% endwith %}
+                </div>
+                
+                <div class="flex flex-row absolute bottom-0 justify-evenly py-3 px-4 w-full">
+                    <a href="{% url 'enduser_profile' %}" class=" ">
+                        <img src="{% static 'images/default_profile.jpg' %}" style="object-fit: contain" alt="" class="w-20 h-20 object-cover rounded-full ">
+                    </a>
+    
+                    <div class="flex flex-col px-8 justify-evenly">
+                        <p class="text-primary px-4 mt-2 ">{{ user.enduser.first_name }} {{ user.enduser.last_name }}</p>
+                        <p class="text-gray px-4 text-center rounded-xl bg-gray text-black py-0.75 ">End User</p>
+                    </div>
+    
+                    <div class="ml-auto my-auto flex-end p-1.5 bg-gray rounded-full">
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'images/logout.svg' %}" alt="" class="h-8">
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                ```
+
+                {% if user|has_group:'host' %}
+                <div class="text-xl">
+                    {% with request.resolver_match.url_name as url_name %}
+                    <ul class="px-4">
+                        <a href="{% url 'host_profile' %}" class="nav-bar-items {% if url_name == 'host_profile' or url_name == 'host_update_profile' %}active{% endif %}">
+                            <img src="{% static 'images/user.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Profile
+                            </li>
+                        </a>
+
+                        <a href="{% url 'host_dashboard' %}" class="nav-bar-items {% if url_name == 'host_dashboard' %} active {% endif %}">
+                            <img src="{% static 'images/dashboard.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Dashboard
+                            </li>
+                        </a>
+
+                        <a href="{% url 'host_vehicles' %}" class="nav-bar-items {% if url_name == 'host_vehicles' or url_name == 'add_vehicles' %} active {% endif %}">
+                            <img src="{% static 'images/Vehicle.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Host Vehicle
+                            </li>
+                        </a>
+
+                        <a href="{% url 'rent_request' %}" class="nav-bar-items{% if url_name == 'rent_request' %} active {% endif %}">
+                            <img src="{% static 'images/request.svg' %}" alt="">
+                            <li class="nav-bar-li">
+                                Renting Request
+                            </li>
+                        </a>
+
+                        <a href="{% url 'rented_history' %}" class="nav-bar-items{% if url_name == 'rented_history' or url_name == 'report_user' %} active {% endif %}">
+                            <img src="{% static 'images/blog.svg' %}" alt=""> 
+                            <li class="nav-bar-li">
+                                Renter History
+                            </li>
+                        </a>
+
+                        
+                    </ul>
+                    {% endwith %}
+                </div>
+                
+                <div class="flex flex-row absolute bottom-0 justify-evenly py-3 px-4 w-full">
+                    <a href="{% url 'host_profile' %}" class=" ">
+                        <img src="{% static 'images/default_profile.jpg' %}" style="object-fit: contain" alt="" class="w-20 h-20 object-cover rounded-full ">
+                    </a>
+    
+                    <div class="flex flex-col px-8 justify-evenly">
+                        <p class="text-primary px-4 mt-2 ">{{ user.host.first_name }} {{ user.host.last_name }}</p>
+                        <p class="text-gray px-4 text-center rounded-xl bg-gray text-black py-0.75 ">Host</p>
+                    </div>
+    
+                    <div class="ml-auto my-auto flex-end p-1.5 bg-gray rounded-full">
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'images/logout.svg' %}" alt="" class="h-8">
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="flex w-4/5 h-screen relative overflow-y-auto">
+            {% if messages %}
+                <div class= "absolute animate-right-to-left top-0 right-0 z-10" style="display: flex; width: 100%; justify-content: flex-end;">
+                    {% for message in messages %}
+                        <div class=" px-8 py-3 {{ message.tags }} mt-2 mr-6 w-auto" id="msg" role="alert" >
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock content%}  
+        </div>
+        
+    </div>
+        
+    <script>
+        setTimeout(function(){
+            if ($('#msg').length > 0) {
+                $('#msg').remove();
+            }
+        },4000);
+    </script>
+</body>
+</html>

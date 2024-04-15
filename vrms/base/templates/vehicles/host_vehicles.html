@@ -1,0 +1,122 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title%} Host Vehicles {% endblock title%}
+
+{% block content %}
+<div class="h-screen w-full px-6 py-10 bg-theme overflow-y-auto">
+    <div class="bg-white h-full flex flex-col shadow-xl">
+        <div class="p-3 overflow-y-auto scrollbar-hide">
+            <p class="text-center text-2xl font-semibold pt-2 pb-4">Host Vehicles</p>
+            {% if request.user.host.is_approved == "Approved" %}
+                {% if add_payment == 'yes' %}
+                    <div class="flex w-full justify-end px-10 py-6">
+                        <a href="{% url 'handle_payment' %}"><button class="bg-custom-green text-white rounded-md py-1.5 px-6" type="submit">Make Payment</button></a>
+                    </div>
+                    <p class="text">You need to make payment before adding vehicles</p>
+                {% else %}
+                    <div class="flex w-full justify-end px-10 py-6">
+                        <a href="{% url 'add_vehicles' %}"><button class="bg-custom-green text-white rounded-md py-1.5 px-6" type="submit">Add Vehicle</button></a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <a>You can only add vehicles after being approved</a>
+            {% endif %}
+            {% if vehicle_list %}
+                {% for vehicle in vehicle_list %}
+                <div class="w-3/5 flex flex-col mx-auto rounded-lg bg-theme p-5 shadow-md text-lg mb-16">
+                    <div class="flex flex-col mb-4">
+                        <div class="flex flex-row justify-between mb-4">
+                            <div>
+                                <span class="font-medium">Number Plate: </span>{{ vehicle.number_plate }}
+                            </div>
+                            <div>
+                                <span class="font-medium">Location: </span>{{ vehicle.location }}
+                            </div>
+                        </div>
+                        <div class="flex flex-row justify-between">
+                            <div>
+                                <span class="font-medium">Bluebook Id: </span>{{ vehicle.bluebook_id }}
+                            </div>
+                            <div>
+                                <span class="font-medium">Type: </span>{{ vehicle.type }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="font-medium">Bluebook: </span>
+                        <a href="{% url 'open_bluebook' vehicle.id %}" style="color: blue;" class="underline">
+                            Bluebook
+                        </a>
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <div class="mb-4 flex flex-col">
+                        <div>
+                            <span class="font-medium">Description: </span>
+                        </div>
+                        <div>
+                            <span>{{ vehicle.description }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 flex flex-col">
+                        <div>
+                            <span class="font-medium">Features: </span>
+                        </div>
+                        <div>
+                            <span>{{ vehicle.feature |safe }}</span>
+                        </div>
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <div class="mb-4">
+                        <span class="font-medium">Hossting Price (Per Day): </span><span>CAD {{ vehicle.price }}</span>
+                    </div>
+
+                    <div>
+                        <div>
+                            <span class="font-medium">Vehicle Imgaes: </span>
+                        </div>
+                        <div class="flex flex-col mb-6">
+                            <a href="{% url 'open_vehicle' vehicle.id 1 %}" style="color: blue;" class="underline">
+                                Image 1
+                            </a>
+                            <a href="{% url 'open_vehicle' vehicle.id 2 %}" style="color: blue;" class="underline">
+                                Image 2
+                            </a>
+                            {% if vehicle.image3 %}
+                                <a href="{% url 'open_vehicle' vehicle.id 3 %}" style="color: blue;" class="underline">
+                                    Image 3
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="font-medium">Vehicle Status:  </span><span class="py-1 px-6 ml-2 text-white rounded-md {% if vehicle.is_approved == 'Approved' %} bg-custom-green {% elif vehicle.is_approved == 'Pending' %} bg-custom-orange {% else %} bg-danger {% endif %} ">{{ vehicle.is_approved }}</span>
+                    </div>
+                    {%  if vehicle.is_approved != "Approved" %}
+                    <div class="flex mt-6 mr-6 justify-end w-full">
+                        <a  href="{% url 'delete_vehicles' vehicle.id %}"><button class="py-1 px-6 bg-danger text-white rounded-md text-lg mr-4"  onclick="return ConfirmDelete()">Delete</button></a>
+                        <a  href="{% url 'update_vehicles' vehicle.id %}"><button class="py-1 px-6 btn text-lg">Update</button></a>
+                    </div>
+                    {% endif %}
+                    
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center pt-20 text-2xl text-dark-gray">No Vehicles to display</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+    function ConfirmDelete() {
+      return confirm("Are you sure you want to delete?");
+    }
+</script>
+{% endblock content %}

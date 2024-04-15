@@ -1,0 +1,135 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title%} Hosting Request {% endblock title%}
+
+{% block content %}
+<div class="h-screen w-full px-6 py-10 bg-theme">
+    <div class="bg-white h-full flex flex-col shadow-xl overflow-y-auto scrollbar-hide">
+        <div class="p-3">
+            <p class="text-center text-2xl font-semibold pt-2 pb-10">Hosting Request</p>
+            {% if unverified_vehicles is not None %}
+                <div class="w-full flex justify-end p-8">
+                    <form>
+                        {% render_field form.is_approved class="rounded-md" %}
+                        <input type="submit" class="bg-custom-green px-8 py-2 text-white rounded-md mx-1 border" value="Filter"/>
+                    </form>
+                </div>
+                {% for v in unverified_vehicles %}
+                <div class="w-3/5 flex flex-col mx-auto rounded-lg bg-theme p-5 shadow-md text-lg mb-16">
+                    <div class="flex flex-col mb-4">
+                        <div class="flex flex-row justify-between mb-4">
+                            <div>
+                                <span class="font-medium">Host: </span>{{ v.host}}
+                            </div>
+                        </div>
+                        <hr class="mb-4">
+                        <div class="flex flex-row justify-between mb-4">
+                            <div>
+                                <span class="font-medium">Number Plate: </span>{{ v.number_plate }}
+                            </div>
+                            <div>
+                                <span class="font-medium">Location: </span>{{ v.location }}
+                            </div>
+                        </div>
+                        <div class="flex flex-row justify-between">
+                            <div>
+                                <span class="font-medium">Bluebook Id: </span>{{ v.bluebook_id }}
+                            </div>
+                            <div>
+                                <span class="font-medium">Type: </span>{{ v.type }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <div class="mb-4">
+                        <span class="font-medium">Bluebook: </span>
+                        <a href="{{ v.bluebook.url }}" target="_blank" style="color: blue;" class="underline">
+                            Bluebook
+                        </a>
+                    </div>
+
+                    <div class="mb-4 flex flex-col">
+                        <div>
+                            <span class="font-medium">Description: </span>
+                        </div>
+                        <div>
+                            <span>{{ v.description }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 flex flex-col">
+                        <div>
+                            <span class="font-medium">Features: </span>
+                        </div>
+                        <div>
+                            <span>{{ v.feature |safe }}</span>
+                        </div>
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <div class="mb-4">
+                        <span class="font-medium">Hossting Price (Per Day): </span><span>CAD {{ v.price }}</span>
+                    </div>
+
+                    <div>
+                        <div class="flex mb-2">
+                            <span>Front Image: &nbsp;</span>
+                            <a href="{{ v.image1.url }}" target="_blank" style="color: blue;" class="underline">
+                                Image 1
+                            </a>
+                        </div>
+                        <div class="flex mb-2">
+                            <span>Back Image: &nbsp;</span>
+                            <a href="{{ v.image2.url }}" target="_blank" style="color: blue;" class="underline">
+                                Image 2
+                            </a>
+                        </div>
+                        {% if image3 %}
+                            <div class="flex mb-2">
+                                <span>Back Image: &nbsp;</span>
+                                <a href="{{ v.image3.url }}" target="_blank" style="color: blue;" class="underline">
+                                    Image 3
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if v.is_approved == "Pending" %}
+                        <div class="w-full flex flex-row justify-end">
+                            <form action="{% url 'approve_vehicle' v.id %}" method="post" style="margin-bottom: 0px;">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-custom-green px-4 py-1.5 mr-4 text-white rounded-lg" onclick="return ConfirmApprove()">Approve</button>
+                            </form>
+                            <form action="{% url 'reject_vehicle' v.id %}" method="post" style="margin-bottom: 0px;">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-danger px-4 py-1.5 mr-4 text-white rounded-lg" onclick="return ConfirmReject()">Reject</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>  
+                {% endfor %}
+            {% else %}
+                <p class="text">No Vehicle Data</p>
+            {% endif %}
+            {% if not unverified_vehicles %} 
+                <p class="text">No {{ filter }} Vehicle</p>
+            {% endif %}        
+        </div>
+    </div>
+</div>
+
+<script>
+    function ConfirmApprove() {
+      return confirm("Are you sure you want to approve vehicle?");
+    }
+    function ConfirmReject() {
+      return confirm("Are you sure you want to reject vehicle?");
+    }
+</script>
+
+{% endblock content %}

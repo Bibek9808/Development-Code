@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load user_group %}
+
+{% block title%} End User Profile {% endblock title%}
+
+{% block content %}
+<div class="flex flex-col h-screen px-6 py-10 w-full bg-theme">
+    <p class="text-center text-3xl font-semibold pt pb-4">Profile</p>
+    <div class="bg-white h-auto flex flex-col w-3/5 mx-auto py-12 rounded-xl shadow-xl">
+        <div class="flex flex-row h-auto bg-theme p-8 mx-8 rounded-xl">
+            <div class="w-1/4 flex items-center  h-full">
+                <img src="{{ enduser.pic.url }}" style="object-fit: contain" alt="" class="mx-auto mb-5 w-40 h-40 object-cover rounded-full ">
+            </div>
+            <div class="flex flex-col w-3/4 text-lg">
+                <div class="flex mb-5">
+                    <p class="font-medium">Name:</p>
+                    <p class="ml-3">{{ enduser.first_name }} {{ enduser.last_name }}</p>
+                </div>
+
+                <div class="flex mb-5">
+                    <p class="font-medium">Email:</p>
+                    <p class="ml-3">{{ enduser.email }}</p>
+                </div>
+
+                <div class="flex">
+                    <p class="font-medium">Contact Number:</p>
+                    <p class="ml-3">{{ enduser.phone_number }}</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="flex w-full mx-8 mt-8">
+            <form action="{% url 'report_user' to=enduser.user_id %}" method="get" style="margin-bottom: 0px;">
+                <button type="submit" class="bg-danger px-4 py-1.5 mr-4 mb-0 text-white rounded-lg">Report</button>
+            </form>
+        </div>
+
+        
+    </div>
+    
+</div>
+{% endblock content%}

@@ -1,0 +1,103 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title%} Host Dashboard {% endblock title%}
+
+{% block content%}
+<div class="h-screen w-full px-6 py-10 bg-theme">
+    <div class="bg-white h-full flex flex-col justify-between shadow-xl relative">
+        <div class="p-3">
+            <h1 class="text-center text-3xl font-semibold pt-2 pb-6">Hosts</h1>
+            <div class="w-100 flex flex-row justify-between mb-6">
+                <form>
+                    {% render_field nameform.name class="rounded-md" %}
+                    <input type="submit" class="bg-custom-green px-8 py-2 text-white rounded-md mx-1 border" value="Filter" />
+                </form>
+    
+                <form>
+                    {% render_field statusform.status class="rounded-md" %}
+                    <input type="submit" class="bg-custom-green px-8 py-2 text-white rounded-md mx-1 border" value="Filter" />
+                </form>
+            </div>
+
+            {% if data is not None %}
+            <table class="w-full">
+                <thead class="h-16 text-center">
+                    <tr class="bg-black text-white text-xl">
+                        <th class="font-medium">Name</th>
+                        <th class="font-medium">Email</th>
+                        <th class="font-medium">Contact No.</th>
+                        <th class="font-medium">Address</th>
+                        <th class="font-medium">Citizineship ID</th>
+                        <th class="font-medium">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% for user in data.object_list  %}
+                    <tr class="text-xl h-14">
+                        <td>{{user.first_name}} {{user.last_name}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{% if user.phone_number %}{{user.phone_number}}{% else %}N/A{% endif %}</td>
+                        <td>{% if user.license_no %}{{user.license_no}}{% else %}N/A{% endif %}</td>
+                        <td>{% if user.citizenship_id %}{{user.citizenship_id}}{% else %}N/A{% endif %}</td>
+                        <td>
+                            <div class="flex flex-row justify-around">
+                                <a href="{% url 'delete_user' user.user.id %}" onclick="return ConfirmDelete()">
+                                    <img src="{% static 'images/delete.svg' %}">
+                                </a>       
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            <div class="flex flex-col h-20 w-full bg-pagination-gray bg-opacity-70 bottom-0 justify-center absolute px-3">
+                <div class="w-full flex flex-row justify-center">
+                    {% if data.has_previous %}
+                    <a class="page-link" href="?page=1">
+                        <button class="table-pagination">
+                            &laquo; first
+                        </button>
+                    </a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        <button class="table-pagination">
+                            Previous
+                        </button>
+                    </a>
+                    {% endif %}
+    
+                    <div class="m-2 py-2 px-6">
+                        Page {{ data.number }} of {{ data.paginator.num_pages }}.
+                    </div>
+    
+                    {% if data.paginator.num_pages > 1  %}
+                    <div class="flex flex-row items-center relative">
+                        <input type="text" style="width:80px;" class="rounded-md m-2 py-2" onchange=window.location="?page="+this.value >
+                        <img src="{% static 'images/search.svg' %}" style="height:25px;" role="button" class="mt-1.5 mr-3 absolute right-0 w-8 h-8 cursor-pointer" onchange=window.location="?page="+this.value>
+                    </div>
+                    {% endif %}
+                    {% if data.has_next %}
+                        <a class="page-link" href="?page={{ data.next_page_number }}">
+                            <button class="table-pagination">
+                                Next
+                            </button>
+                        </a>
+                        <a class="page-link" href="?page={{ data.paginator.num_pages }}">
+                            <button class="table-pagination">
+                                Last &raquo;
+                            </button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function ConfirmDelete() {
+      return confirm("Are you sure you want to delete?");
+    }
+</script>
+{% endblock content %}
